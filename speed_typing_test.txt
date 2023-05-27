@@ -1,0 +1,107 @@
+
+words = ['Engineer','Embellish','Eulogy','Corroborate','Anomalous','Tractable','Wonkey','unique','quell','paradigm','Integrity','bypass','Society','Fex','Aggressive','Matriculate','Agriculture','Education','computing']
+
+def labelSlider():
+    global count,sliderWords
+    text='Welcome to speed typing test'
+    if(count>=len(text)):
+        count =0
+        sliderWords =''
+    sliderWords += text[count]
+    
+    count +=1
+    fontLabel.configure(text=sliderWords)
+    fontLabel.after(150,labelSlider)
+    
+    
+    
+def time():
+    global timeleft,score,miss
+    if(timeleft >=11):
+        pass
+    else:
+        timeLabelCount.configure(fg='red')
+    if(timeleft>0):
+        timeleft -=1
+        timeLabelCount.configure(text=timeleft)
+        timeLabelCount.after(1000,time)
+    else:
+        gamePlayDetailLabel.configure(text='Hit ={} | Miss ={} |Total Score ={}'.format(score,miss,score-miss))
+        rr=messagebox.askretrycancel('Notification','For play again Hit Retry Button')
+        if(rr==True):
+            score =0
+            timeleft=60
+            miss=0
+            timeLabelCount.configure(text=timeleft)
+            wordLabel.configure(text=words[0])
+            scoreLabelCount.configure(text=score)
+        
+        
+def startGame(event):
+    global score,miss
+    if(timeleft == 60):
+        
+        time()
+        
+    gamePlayDetailLabel.configure(text='')
+    if(wordEntry.get() == wordLabel['text']):
+        
+        score += 1
+        scoreLabelCount.configure(text=score)
+        
+    else:
+        miss += 1
+        print("Miss:",miss)
+    random.shuffle(words)
+    wordLabel.configure(text=words[0])
+    wordEntry.delete(0,END)
+    
+    
+    
+    
+    
+from tkinter import *
+import random
+from tkinter import messagebox
+
+root = Tk()
+root.geometry('800x600+400+100')
+root.configure(bg="pink")
+root.title('SPEED TYPING TEST')
+
+score =0
+timeleft=60
+count =0
+sliderWords = ''
+miss = 0
+
+fontLabel = Label(root,text='',font=('Arial',25,'italic bold'),bg='white')
+fontLabel.place(x=200,y=10)
+labelSlider()
+
+random.shuffle(words)
+wordLabel = Label(root,text=words[0],font=('airal',40,'italic bold'))
+wordLabel.place(x=350,y=200)
+
+scoreLabel =Label(root,text='Your score :',font=('Arial',25,'italic bold'),fg='blue')
+scoreLabel.place(x=10,y=100)
+
+scoreLabelCount = Label(root,text=score,font=('Arial',25,'italic bold'),fg='blue')
+scoreLabelCount.place(x=80,y=180)
+
+timerLabel = Label(root,text='Time left :',font=('Arial',25,'italic bold'),fg='blue' )
+timerLabel.place(x=600,y=100)
+
+timeLabelCount = Label(root,text=timeleft,font=('Arial',25,'italic bold'),fg='blue')
+timeLabelCount.place(x=680,y=180)
+
+gamePlayDetailLabel =Label(root,text='Type Word And Hit Enter Button',font=('arial',30,'italic bold'),bg='white',fg='dark grey')
+gamePlayDetailLabel.place(x=120,y=450)
+
+
+wordEntry = Entry(root,font=('airal',25,'italic bold'),bd=10,justify='center')
+wordEntry.place(x=300,y=300)
+wordEntry.focus_set()
+
+root.bind('<Return>',startGame)
+root.mainloop()
